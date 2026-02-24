@@ -1,114 +1,61 @@
+# eclipse SDV blueprint with digital.auto and AosEdge
+
+TODO: dont read any further yet
+
+An Integration Blueprint for Rapid SDV Prototyping with digital.auto on Red Hat IVOS
+
 # Introduction
+This repository provides a catalyst for building a true cloud-to-car development workflow. It serves as an initial blueprint demonstrating how developers can package a digital.auto application, deploy it to the digital.auto SDV runtime, and execute it within an environment powered by Red Hat's In-Vehicle Operating System (RIVOS). 
 
-This guidance aim to setup a serivce on EPAM unit to receive python code from playground.digital.auto and execute code.
+The goal is to establish a starting point for a fully integrated toolchain that accelerates the development and validation of mixed-criticality automotive software.
 
-## Folder struture
-```bash
-- service                       // this folder for the connector service
-    - meta
-        - config.yaml           // service config file
-    - src
-        - app
-            - syncer.py         // this is the main app to connect between unit and plsyground.digital.auto.
-            - ...
-```
+# User journey
+| `digital.auto` Playground Workflow                                       | Edge Device Workflow                                                     |
+| :----------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| 1. Develops a new SDV application.                                       | 1. Installs RIVOS onto an edge device.                                   |
+| 2. Configures the edge device as a new runtime target in the playground. | 2. Integrates the `digital.auto` SDV runtime into the RIVOS environment. |
 
-# Installation
+---
 
-## Step 1: Create unit and service on AOS Edge website
+**End-to-End Execution:** The user then executes the application from the playground, deploying it to the new runtime running on the edge device.
 
-Follow this guide and create the Aos service: [AosEdge Quick start](https://docs.aosedge.tech/docs/quick-start/)
 
-Output: you will get a `service ID`
+# Architecture
+![Blueprint v1](images/01_blueprint_v1.jpg)
 
-Here are some hints to get you started with Aos solutions:
+# Getting started
 
-1. If using virtualbox, the version 7.1.6 is recommended. There is a [bug](https://github.com/VirtualBox/virtualbox/issues/271) in version 7.2.x which makes it unsuitable for AosCore.
+## Prerequisites
+1. Fedora installation on a machine
+   1. The blueprint has been tried on Fedora 43
+   2. AutoSD is seen to have connectivity issues with WSL. Hence a discrete device is recommended.
 
-1. Be aware that if the unit is created behind a corporate proxy, it may interfere with connection to AosCloud.
+## AutoSD installation
+1. AutoSD nightly build images are available [here](https://autosd.sig.centos.org/AutoSD-9/nightly/raw-images/). 
+2. Download an image with "qa" suffix. e.g. `auto-osbuild-qemu-autosd9-qa-regular-x86_64-2203174928.e5a9b30b.raw.xz`
+3. Unpack the image using `unxz <image>.raw.xz`
+4. Install necessary tools to launch the image
+  ```sh
+      sudo dnf install qemu
+      
+      sudo dnf copr enable @centos-automotive-sig/osbuild-auto
+      sudo dnf copr enable @centos-automotive-sig/automotive-image-builder
+      sudo dnf install automotive-image-builder
+  ```
+5. Launch the AutoSD image using `sudo automotive-image-runner --nographics <image>.raw`
+   1. The default login credentials are: `root password`
 
-1. When creating a service in AosCloud, reserve at least the amount of resources given by `meta/config.yaml`.
 
-   e.g. 
-   ```yaml
-       # Quotas assigned to service
-       quotas:
-           cpu: 10000
-           mem: 100MB
-           state: 128KB
-           storage: 20MB
-           # upload_speed: 1MB
-           # download_speed: 1MB
-           # upload: 512MB
-           # download: 512MB
-           temp: 128KB
-   ```
-   ![Service resources](assets/images/01_epam_service_resource.png)
+## Integrate digital.auto SDV runtime on AutoSD
+1. Pull the latest digital.auto container using `podman pull ghcr.io/eclipse-autowrx/sdv-runtime:latest`
+2. Launch the container using `podman run -d -e RUNTIME_NAME="<name>" ghcr.io/eclipse-autowrx/sdv-runtime:latest`
+   1. replace the `<name>` with a runtime name of your choice
 
-1. This service has dependency to "aos-pylibs-layer". This layer must be uploaded to AosCloud Layers tab.
-   
-   You can download the latest version from the layer from [here](https://github.com/aosedge/meta-aos-vm/releases).
+## Playground application
+1. Choose a pre-existing playground application (e.g. [Smart Wipers](https://playground.digital.auto/model/6729f71665e66f002772b9e3/library/prototype/672dec8115d4fc00270d0a63/view)) or create your own.
+2. Expand the right panel and click "Add Runtime"
+3. Type in the runtime name created above step "Integrate digital.auto SDV runtime on AutoSD"
+4. Click the "Play" button to execute in the new runtime.
 
-   e.g. aos-pylibs-layer-genericx86-64-1.0.0.tar.gz
-
-   ![Layers tab](assets/images/02_layer.png)
-
-1. download `unitconfig.json` from the release page in previous step.
-   
-   create a new Target System and paste the json contents there.
-
-   ![Target systems](assets/images/03_target_system.png)
-
-1. After all the steps as in the official Aos Quick Start, make sure of the following:
-   1. Unit is `Online`
-   2. Service status is `ready`
-   3. In the Unit Details, Subject/Service status is `Installed`
-
-1. Finally fetch the `system id` from the `UUID` of the `Services` tab
-   
-   ![service id](assets/images/04_service_id.png)
-
-## Step 2: 
-Go to file: service/meta/config.yaml, line 19, change `service_id` to `service ID`
-
-## Step 3
-Go to file: service/src/app/syncer.py, line 25, change DEFAULT_RUNTIME_NAME = 'EPAM-SERVICE-001' to a another unique name.
-```python
-# set a secret name
-DEFAULT_RUNTIME_NAME = 'EPAM-ANHB-81'
-```
-
-## Step 4: sign and publish your service
-```bash
-cd service
-aos-signer sign
-aos-signer upload
-```
-
-Then wait for service deploy to unit. It take a few minutes.
-
-# Step 5: Test with existing prototype
-Go to playground.digital.auto perform below action:
-1. Register and Login(if you don't have account yet)
-2. Test with existing prototype.
-   2.1 Goto this prototype:
-   https://playground.digital.auto/model/67d275636e5b6c002746bf4f/library/prototype/6810400bf7ffb78147e4a882/code
-
-   2.2 Expand terminal panel
-   ![image](https://bewebstudio.digitalauto.tech/data/projects/ih1XKDE24yRM/expland_terminal.png)
-
-   2.3 Click 'Add runtime' (only do this action one time)
-    ![image](https://bewebstudio.digitalauto.tech/data/projects/ih1XKDE24yRM/add_runtime.png)
-
-   2.4 Enter your runtime name, format: Runtime-{your_unique runtime name}
-    => As above config: it is: `Runtime-EPAM-ANHB-81`, then click add and close dialog.
-   ![image](https://bewebstudio.digitalauto.tech/data/projects/ih1XKDE24yRM/set_runtime_name.png)
-
-   2.5 When the runtime list reload, pick your runtime. Then click run button to execute the code on aos unit.
-   2.6 Switch to dashboard to see the result.
-   
-# Step 6: Test with your own prototype   
-1. Create e vehicle model(if you don't have any) with VSS v4.1
-2. Create a prototype
-3. Go to tab Code: learn from step 5 code, modify it for your purpose
-4. Execute new code with your runtime selected
+# Demo in action
+![demo v1](images/02_demo_v1.gif)
