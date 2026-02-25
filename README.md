@@ -8,11 +8,6 @@ It showcases how SDV applications are built in the cloud, pushed to a registry, 
 
 ## User Journey
 
-|                          | Turn on wipers            | open door / trunk                                                              | Turn off Wipers                                                           |
-| :----------------------- | :------------------------ | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------ |
-| **Who**                  | Driver                    | User                                                                           | System                                                                    |
-| **What**                 | Wipers turned on manually | User opens the car door/trunk and the open status of door/trunk is set to true | The wiping is immediately turned off by the software and user is notified |
-| **Customer TouchPoints** | Windshield wiper switch   | Door/trunk handle                                                              | Notification on car dashboard and mobile app                              |
 
 
 ## Deployment View
