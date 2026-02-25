@@ -22,12 +22,6 @@ OEM centrally deploys application from cloud App Registry into vehicle fleet (OT
 
 # Architecture
 
-```mermaid
-block
-columns 1
-  db(("DB"))
-
-
 
 # Getting started
 
