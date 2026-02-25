@@ -1,50 +1,22 @@
-# eclipse SDV blueprint with digital.auto and AosEdge
+# A hybrid Cloud–Edge SDV Application Lifecycle Management
 
-TODO: dont read any further yet
+This blueprint demonstrates an end-to-end workflow for developing, validating and orchestrating Mixed-Critical Software-Defined Vehicle (SDV) applications across cloud and HPC edge device. 
 
-An Integration Blueprint for Rapid SDV Prototyping with digital.auto on Red Hat IVOS
-
-# Introduction
-This repository provides a catalyst for building a true cloud-to-car development workflow. It serves as an initial blueprint demonstrating how developers can package a digital.auto application, deploy it to the digital.auto SDV runtime, and execute it within an environment powered by Red Hat's In-Vehicle Operating System (RIVOS). 
-
-The goal is to establish a starting point for a fully integrated toolchain that accelerates the development and validation of mixed-criticality automotive software.
-
-# User journey
-| `digital.auto` Playground Workflow                                       | Edge Device Workflow                                                     |
-| :----------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-| 1. Develops a new SDV application.                                       | 1. Installs RIVOS onto an edge device.                                   |
-| 2. Configures the edge device as a new runtime target in the playground. | 2. Integrates the `digital.auto` SDV runtime into the RIVOS environment. |
-
----
-
-**End-to-End Execution:** The user then executes the application from the playground, deploying it to the new runtime running on the edge device.
-
-
-# Architecture
-![Blueprint v1](images/01_blueprint_v1.jpg)
-
-# Getting started
-
-## Prerequisites
-1. Fedora installation on a machine
-   1. The blueprint has been tried on Fedora 43
-   2. AutoSD is seen to have connectivity issues with WSL. Hence a discrete device is recommended.
-
-## Steps for demo
-TODO: Kiran
-
-# Demo in action
-![demo v1](images/02_demo_v1.gif)
-
-------------
-
-# code2car
-A hybrid Cloud–Edge SDV Application Lifecycle Management
-
-# Introduction
-This blueprint demonstrates an end-to-end workflow for developing, validating and orchestrating Mixed-Critical Software-Defined Vehicle (SDV) applications across cloud and HPC edge device. It showcases how containerized SDV applications are built in the cloud, pushed to a registry, and deployed onto an in-vehicle HPC running AOS Core and digital.auto runtime components such as MQTT, KUKSA, and a Signal Gateway. Vehicle signals are exchanged across heterogeneous compute domains with multiple Linux HPC and ThreadX on MCU — through uProtocol and Zenoh.
+It showcases how SDV applications are built in the cloud, pushed to a registry, and deployed onto an in-vehicle HPC running AOS Core and digital.auto runtime components such as MQTT, KUKSA, and a Signal Gateway. Vehicle signals are exchanged across heterogeneous compute domains with HPCs and Zonal compute — through uProtocol and Zenoh.
 
 # Sample Use Case
+
+## User Journey
+
+|                          | Turn on wipers            | open door / trunk                                                              | Turn off Wipers                                                           |
+| :----------------------- | :------------------------ | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------ |
+| **Who**                  | Driver                    | User                                                                           | System                                                                    |
+| **What**                 | Wipers turned on manually | User opens the car door/trunk and the open status of door/trunk is set to true | The wiping is immediately turned off by the software and user is notified |
+| **Customer TouchPoints** | Windshield wiper switch   | Door/trunk handle                                                              | Notification on car dashboard and mobile app                              |
+
+
+## Deployment View
+
 1. App developer writes an application and validates in digital.auto playground
 1. After successful validation App developer publishes the application in a cloud App Registry
 1. OEM deploys digital.auto sdv runtime into existing E/E architecture which abstracts the underlying vehicle complexity for applications.
@@ -54,7 +26,23 @@ This blueprint demonstrates an end-to-end workflow for developing, validating an
 OEM centrally deploys application from cloud App Registry into vehicle fleet (OTA)
 
 # Architecture
-![Architecture](images/architecture.jpg)
+
+```mermaid
+block
+columns 1
+  db(("DB"))
+  blockArrowId6<["&nbsp;&nbsp;&nbsp;"]>(down)
+  block:ID
+    A
+    B["A wide one in the middle"]
+    C
+  end
+  space
+  D
+  ID --> D
+  C --> D
+  style B fill:#969,stroke:#333,stroke-width:4px
+
 
 # Getting started
 
