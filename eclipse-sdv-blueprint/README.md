@@ -38,7 +38,7 @@ The journey below shows how the system interacts across three steps — from the
 
 You can explore and run the prototype directly in the digital.auto playground — no hardware needed:
 
- **[Open Prototype on digital.auto Playground](https://playground.digital.auto)**
+ **[Open Prototype on digital.auto Playground]([https://playground.digital.auto](https://playground.digital.auto/model/67f76c0d8c609a0027662a69/library/prototype/69ce30f438bb8e98f0af5ac8/code))**
 
 The playground lets you simulate vehicle signals and see the app's logic in action before touching any real device. OEMs can use this to validate business logic, test signal flows, and iterate on the customer journey end-to-end.
 
